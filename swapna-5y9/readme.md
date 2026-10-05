@@ -1,120 +1,134 @@
-##CREATE TABLE student (
-    student_id NUMBER(5) PRIMARY KEY,
-    student_name VARCHAR2(50),
-    course VARCHAR2(30),
-    marks NUMBER(5,2)
-);
-![output](5a1.png)
-##insert values
-
-INSERT INTO student VALUES (101, 'Ravi', 'CSE', 85);
-INSERT INTO student VALUES (102, 'Sita', 'CSE', 92);
-INSERT INTO student VALUES (103, 'Kiran', 'ECE', 78);
-INSERT INTO student VALUES (104, 'Anjali', 'EEE', 88);
-INSERT INTO student VALUES (105, 'Rahul', 'CSE', 74);
-INSERT INTO student VALUES (106, 'Priya', 'ECE', 95);
-INSERT INTO student VALUES (107, 'Arun', 'IT', 81);
-INSERT INTO student VALUES (108, 'Sneha', 'CSE', 89);
-INSERT INTO student VALUES (109, 'Vijay', 'EEE', 68);
-INSERT INTO student VALUES (110, 'Divya', 'IT', 91);
-INSERT INTO student VALUES (111, 'Manoj', 'ECE', 76);
-INSERT INTO student VALUES (112, 'Kavya', 'CSE', 84);
-INSERT INTO student VALUES (113, 'Ramesh', 'IT', 72);
-INSERT INTO student VALUES (114, 'Swathi', 'EEE', 87);
-INSERT INTO student VALUES (115, 'Ajay', 'ECE', 93);
+##     SELECT * FROM STUDENT1;
+DESC STUDENT1;
+![output](6a1.png)
+#insert values
+INSERT INTO STUDENT1 VALUES (101, 'Ayesha', 'CSE', 85);
+INSERT INTO STUDENT1 VALUES (102, 'Rahul', 'CSE', 55);
+INSERT INTO STUDENT1 VALUES (103, 'Saniya', 'ECE', 72);
+INSERT INTO STUDENT1 VALUES (104, 'Anjum', 'EEE', 48);
+INSERT INTO STUDENT1 VALUES (105, 'Priya', 'CSE', 91);
+![output](6a2.png)
 COMMIT;
-#desc table
-![output](5a1.png)
-SELECT * FROM student;
 
-![output](5a3.png)
 SET SERVEROUTPUT ON;
+
 DECLARE
-    -- Boolean variable to check whether any student is found
-    v_found BOOLEAN := FALSE;
-
-    -- User-defined exception
-    e_no_first_class EXCEPTION;
-
-    -- Cursor to retrieve First Class students
-    CURSOR c_first_class IS
-        SELECT student_id, student_name, marks
-        FROM student
-        WHERE marks >= 60;
+    v_id       STUDENT1.SID%TYPE := 101;
+    v_name     STUDENT1.SNAME%TYPE;
+    v_marks    STUDENT1.DID%TYPE;
+    v_grade    VARCHAR2(20);
+    v_result   VARCHAR2(20);
+    v_value    NUMBER;
 BEGIN
-    -- Open cursor and process each student
-    FOR student_rec IN c_first_class
-    LOOP
-        -- A matching record is found
-        v_found := TRUE;
 
-        -- Display student details
-        DBMS_OUTPUT.PUT_LINE( 'Student ID   : ' || student_rec.student_id );
-        DBMS_OUTPUT.PUT_LINE( 'Student Name : ' || student_rec.student_name);
-        DBMS_OUTPUT.PUT_LINE('Marks        : ' || student_rec.marks);
-        DBMS_OUTPUT.PUT_LINE('---------------------------');
-    END LOOP;
+    SELECT SNAME, DID
+    INTO v_name, v_marks
+    FROM STUDENT1
+    WHERE SID = v_id;
 
-    -- Check whether any record was found
-        IF v_found = FALSE THEN
-        RAISE e_no_first_class;
+    IF v_marks >= 90 THEN
+        v_grade := 'A+';
+    ELSIF v_marks >= 75 THEN
+        v_grade := 'A';
+    ELSIF v_marks >= 60 THEN
+        v_grade := 'B';
+    ELSIF v_marks >= 40 THEN
+        v_grade := 'C';
+    ELSE
+        v_grade := 'F';
     END IF;
 
-EXCEPTION
-    -- Handle user-defined exception
-    WHEN e_no_first_class THEN
-        DBMS_OUTPUT.PUT_LINE('No First Class Students Found.');
+    IF v_marks >= 40 THEN
+        v_result := 'PASS';
+    ELSE
+        v_result := 'FAIL';
+    END IF;
+
+    DBMS_OUTPUT.PUT_LINE('Student ID : ' || v_id);
+    DBMS_OUTPUT.PUT_LINE('Student Name : ' || v_name);
+    DBMS_OUTPUT.PUT_LINE('Marks : ' || v_marks);
+    DBMS_OUTPUT.PUT_LINE('Grade : ' || v_grade);
+    DBMS_OUTPUT.PUT_LINE('Result : ' || v_result);
+
+END;
+/
+![output](6a3.png)
+
+
+SET SERVEROUTPUT ON;
+
+DECLARE
+    v_student_id STUDENT.STUDENT_ID%TYPE := 101;
+    v_name       STUDENT.STUDENT_NAME%TYPE;
+    v_course     STUDENT.COURSE%TYPE;
+
+    v_age_number NUMBER := 20;
+    invalid_marks EXCEPTION;
     
-    -- Handle other unexpected exceptions
+
+
+BEGIN
+
+    -- 1. WHILE LOOP
+    DBMS_OUTPUT.PUT_LINE('1. Numbers using WHILE LOOP:');
+    WHILE i <= 5 LOOP
+        DBMS_OUTPUT.PUT_LINE(i);
+        i := i + 1;
+    END LOOP;
+
+    -- 2. NUMERIC FOR LOOP
+    DBMS_OUTPUT.PUT_LINE('2. Numbers using FOR LOOP:');
+
+    FOR j IN 1..5 LOOP
+        DBMS_OUTPUT.PUT_LINE(j);
+
+
+    -- 3. NESTED FOR LOOP
+    DBMS_OUTPUT.PUT_LINE('3. Multiplication Table:');
+
+    FOR x IN 1..3 LOOP
+        FOR y IN 1..3 LOOP
+                x || ' x ' || y || ' = ' || (x * y)
+            );
+        DBMS_OUTPUT.PUT_LINE('');
+    END LOOP;
+
+
+    -- 4. Retrieve student record
+        SELECT STUDENT_NAME, COURSE, MARKS
+        INTO v_name, v_course, v_marks
+        FROM STUDENT
+        WHERE STUDENT_ID = v_student_id;
+        DBMS_OUTPUT.PUT_LINE('Student Name: ' || v_name);
+        DBMS_OUTPUT.PUT_LINE('Course: ' || v_course);
+        DBMS_OUTPUT.PUT_LINE('Marks: ' || v_marks);
+
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            DBMS_OUTPUT.PUT_LINE('No student record found.');
+    END;
+
+    -- 5. Validate marks
+    IF v_marks > 100 THEN
+        RAISE invalid_marks;
+    END IF;
+
+    -- 6. Validate age
+    IF v_age < 18 THEN
+        RAISE_APPLICATION_ERROR(
+            'Age must be 18 or above.'
+        );
+    END IF;
+
+    DBMS_OUTPUT.PUT_LINE('Program executed successfully.');
+
+EXCEPTION
+    WHEN invalid_marks THEN
+
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
 END;
 /
-![output](5a4.png)
-![output](5a5.png)
-UPDATE student 
-set marks = 59;
-SELECT * FROM student;
-![output](5a6.png)
-
-    
-     Experiment - 5b
-     SET SERVEROUTPUT ON;
-
-##CREATE TABLE STUDENT1 (
-    STUDENT_ID NUMBER(5) PRIMARY KEY,
-    STUDENT_NAME VARCHAR2(30),
-    COURSE VARCHAR2(20),
-);
-DESC STUDENT1;
-![output](5b1.png)
-SET SERVEROUTPUT ON;
-
-BEGIN
-    INSERT INTO STUDENT1
-    VALUES (201, 'Ravi', 'CSE', 85);
-
-    INSERT INTO STUDENT1
-    VALUES (202, 'Anjali', 'ECE', 78);
-
-    SAVEPOINT SP1;
-
-    INSERT INTO STUDENT1
-    VALUES (203, 'Kiran', 'IT', 65);
-
-    DBMS_OUTPUT.PUT_LINE('Three student records inserted.');
-
-    ROLLBACK TO SP1;
-    DBMS_OUTPUT.PUT_LINE('Rollback to SAVEPOINT SP1 completed.');
-    DBMS_OUTPUT.PUT_LINE('Third student record has been rolled back.');
-
-    COMMIT;
-
-    DBMS_OUTPUT.PUT_LINE('Transaction committed successfully.');
-
-EXCEPTION
-        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
-        ROLLBACK;
-END;
-/  
-
+ ```![output](6b1.png)
+![output](6b2.png)
+![output](6b3.png)
