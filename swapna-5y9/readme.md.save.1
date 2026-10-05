@@ -4,9 +4,8 @@
     course VARCHAR2(30),
     marks NUMBER(5,2)
 );
-![output](5a1.png)
-##insert values
 
+##insert the table 
 INSERT INTO student VALUES (101, 'Ravi', 'CSE', 85);
 INSERT INTO student VALUES (102, 'Sita', 'CSE', 92);
 INSERT INTO student VALUES (103, 'Kiran', 'ECE', 78);
@@ -23,11 +22,10 @@ INSERT INTO student VALUES (113, 'Ramesh', 'IT', 72);
 INSERT INTO student VALUES (114, 'Swathi', 'EEE', 87);
 INSERT INTO student VALUES (115, 'Ajay', 'ECE', 93);
 COMMIT;
-#desc table
-![output](5a1.png)
+
 SELECT * FROM student;
 
-![output](5a3.png)
+#pl/sql code
 SET SERVEROUTPUT ON;
 DECLARE
     -- Boolean variable to check whether any student is found
@@ -63,37 +61,30 @@ BEGIN
 EXCEPTION
     -- Handle user-defined exception
     WHEN e_no_first_class THEN
-        DBMS_OUTPUT.PUT_LINE('No First Class Students Found.');
-    
-    -- Handle other unexpected exceptions
-    WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
 END;
 /
-![output](5a4.png)
-![output](5a5.png)
+
 UPDATE student 
 set marks = 59;
 SELECT * FROM student;
-![output](5a6.png)
+DROP student;
 
     
      Experiment - 5b
-     SET SERVEROUTPUT ON;
 
-##CREATE TABLE STUDENT1 (
+CREATE TABLE STUDENT1 (
     STUDENT_ID NUMBER(5) PRIMARY KEY,
     STUDENT_NAME VARCHAR2(30),
     COURSE VARCHAR2(20),
+    MARKS NUMBER(3),
 );
 DESC STUDENT1;
-![output](5b1.png)
 SET SERVEROUTPUT ON;
 
 BEGIN
     INSERT INTO STUDENT1
     VALUES (201, 'Ravi', 'CSE', 85);
-
     INSERT INTO STUDENT1
     VALUES (202, 'Anjali', 'ECE', 78);
 
@@ -105,6 +96,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('Three student records inserted.');
 
     ROLLBACK TO SP1;
+
     DBMS_OUTPUT.PUT_LINE('Rollback to SAVEPOINT SP1 completed.');
     DBMS_OUTPUT.PUT_LINE('Third student record has been rolled back.');
 
@@ -113,8 +105,9 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('Transaction committed successfully.');
 
 EXCEPTION
+    WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
         ROLLBACK;
 END;
-/  
+/
 
