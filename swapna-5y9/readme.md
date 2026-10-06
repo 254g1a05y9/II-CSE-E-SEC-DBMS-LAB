@@ -1,74 +1,105 @@
-Additional Experiment - 2
-# Developing a Stored Function to Calculate Annual Salary 
+##Additional Experiment - 3
+ Develop Parameterized Cursor for Employees
 
-## Create the EMPLOYEE Table
+ Create the EMPLOYEE Table
+#create table
 
-```
 CREATE TABLE employee (
     employee_id   NUMBER(5) PRIMARY KEY,
     employee_name VARCHAR2(50),
     department    VARCHAR2(30),
-    monthly_salary NUMBER(10,2)
+    designation   VARCHAR2(30),
+    salary        NUMBER(10,2)
 );
 
- Insert Sample Employee Records
-INSERT INTO employee VALUES (101, 'Ravi',   'CSE', 25000);
-INSERT INTO employee VALUES (102, 'Sita',   'ECE', 30000);
-INSERT INTO employee VALUES (103, 'Kiran',  'EEE', 35000);
-INSERT INTO employee VALUES (104, 'Anjali', 'CSE', 40000);
-INSERT INTO employee VALUES (105, 'Rahul',  'IT',  45000);
+
+```##Insert Sample records
+
+```
+INSERT INTO employee VALUES
+(101, 'Ravi', 'CSE', 'Software Engineer', 35000);
+
+INSERT INTO employee VALUES
+(102, 'Sita', 'ECE', 'System Engineer', 40000);
+
+INSERT INTO employee VALUES
+(103, 'Kiran', 'CSE', 'Senior Developer', 50000);
+
+INSERT INTO employee VALUES
+(104, 'Anjali', 'EEE', 'Electrical Engineer', 38000);
+
+INSERT INTO employee VALUES
+(105, 'Rahul', 'CSE', 'Software Engineer', 42000);
+
+INSERT INTO employee VALUES
+(106, 'Priya', 'ECE', 'Hardware Engineer', 45000);
+
+INSERT INTO employee VALUES
+(107, 'Arun', 'EEE', 'Design Engineer', 40000);
+
+INSERT INTO employee VALUES
+(108, 'Sneha', 'CSE', 'Project Engineer', 48000);
 
 COMMIT;
 
-```
+![output](add3.png)
 
 
 SELECT * FROM employee;
 
+![output](add3.1.png)
 
-CREATE OR REPLACE FUNCTION calculate_annual_salary (
-    p_monthly_salary IN NUMBER
-)
-RETURN NUMBER
-IS
-    v_annual_salary NUMBER;
-BEGIN
-    v_annual_salary := p_monthly_salary * 12;
-
-    RETURN v_annual_salary;
-END;
-
-SELECT object_name, status
-FROM user_objects
-WHERE object_name = 'CALCULATE_ANNUAL_SALARY';
-
-
-SELECT employee_id,
-       employee_name,
-       department,
-       monthly_salary,
-       calculate_annual_salary(monthly_salary) AS annual_salary
-FROM employee;
- 
-```
 SET SERVEROUTPUT ON;
 
 DECLARE
-    v_monthly_salary employee.monthly_salary%TYPE;
-    v_annual_salary  NUMBER;
+
+    -- Parameterized cursor
+    CURSOR c_employee (p_department VARCHAR2) IS
+        SELECT employee_id,
+               department,
+        FROM employee
+
+    -- Variables to store employee details
+    v_department    employee.department%TYPE;
+    v_designation   employee.designation%TYPE;
+
+
+    -- Open cursor by passing department name
+
+    LOOP
+
+        INTO v_employee_id,
+             v_department,
+
+    CLOSE c_employee;
+    -- Close cursor
+    END LOOP;
+        DBMS_OUTPUT.PUT_LINE('-----------------------------');
+
+        DBMS_OUTPUT.PUT_LINE('Salary        : ' || v_salary);
+        -- Display employee details
+        DBMS_OUTPUT.PUT_LINE('Designation   : ' || v_designation);
+        DBMS_OUTPUT.PUT_LINE('Department    : ' || v_department);
+        DBMS_OUTPUT.PUT_LINE('Employee Name : ' || v_employee_name);
+        DBMS_OUTPUT.PUT_LINE('Employee ID   : ' || v_employee_id);
+        -- Exit when no more records are available
+
+        EXIT WHEN c_employee%NOTFOUND;
+             v_salary;
+             v_designation,
+             v_employee_name,
+        FETCH c_employee
+    -- Fetch employee records
+    OPEN c_employee('CSE');
 BEGIN
-    SELECT monthly_salary
-    INTO v_monthly_salary
-    FROM employee
-    WHERE employee_id = 101;
-
-    v_annual_salary := calculate_annual_salary(v_monthly_salary);
-
-    DBMS_OUTPUT.PUT_LINE('Employee ID     : 101');
-    DBMS_OUTPUT.PUT_LINE('Monthly Salary  : ' || v_monthly_salary);
-    DBMS_OUTPUT.PUT_LINE('Annual Salary   : ' || v_annual_salary);
-END;
+    v_salary        employee.salary%TYPE;
+    v_employee_id   employee.employee_id%TYPE;
+    v_employee_name employee.employee_name%TYPE;
+        WHERE department = p_department;
+               salary
+               designation,
+```
+end;
 /
 ```
-![output](add2.1.png)
-![output](add2.png)
+![output](add3.2.png)
