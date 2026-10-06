@@ -1,61 +1,74 @@
-Additional Experiment -1
-Student Information Lookup Using Student ID 
-Create the STUDENT Table
+Additional Experiment - 2
+# Developing a Stored Function to Calculate Annual Salary 
 
+## Create the EMPLOYEE Table
 
-CREATE TABLE student (
-    student_id   NUMBER(5) PRIMARY KEY,
-    student_name VARCHAR2(50),
-    department   VARCHAR2(30),
-    marks        NUMBER(5,2)
+```
+CREATE TABLE employee (
+    employee_id   NUMBER(5) PRIMARY KEY,
+    employee_name VARCHAR2(50),
+    department    VARCHAR2(30),
+    monthly_salary NUMBER(10,2)
 );
 
+ Insert Sample Employee Records
+INSERT INTO employee VALUES (101, 'Ravi',   'CSE', 25000);
+INSERT INTO employee VALUES (102, 'Sita',   'ECE', 30000);
+INSERT INTO employee VALUES (103, 'Kiran',  'EEE', 35000);
+INSERT INTO employee VALUES (104, 'Anjali', 'CSE', 40000);
+INSERT INTO employee VALUES (105, 'Rahul',  'IT',  45000);
 
-
-select * from student;
-
-
-INSERT INTO student VALUES (101, 'Ravi','CSE', 85);
-INSERT INTO student VALUES (102, 'Sita',   'ECE', 92);
-INSERT INTO student VALUES (103, 'Kiran',  'EEE', 78);
-INSERT INTO student VALUES (104, 'Anjali', 'CSE', 88);
-INSERT INTO student VALUES (105, 'Rahul',  'IT',  74);
-![output](add.1.png)
 COMMIT;
 
-SELECT * FROM student;
+```
 
 
+SELECT * FROM employee;
+
+
+CREATE OR REPLACE FUNCTION calculate_annual_salary (
+    p_monthly_salary IN NUMBER
+)
+RETURN NUMBER
+IS
+    v_annual_salary NUMBER;
+BEGIN
+    v_annual_salary := p_monthly_salary * 12;
+
+    RETURN v_annual_salary;
+END;
+
+SELECT object_name, status
+FROM user_objects
+WHERE object_name = 'CALCULATE_ANNUAL_SALARY';
+
+
+SELECT employee_id,
+       employee_name,
+       department,
+       monthly_salary,
+       calculate_annual_salary(monthly_salary) AS annual_salary
+FROM employee;
+ 
+```
 SET SERVEROUTPUT ON;
 
 DECLARE
-    v_student_id   student.student_id%TYPE;
-    v_student_name student.student_name%TYPE;
-    v_department   student.department%TYPE;
-    v_marks        student.marks%TYPE;
-
+    v_monthly_salary employee.monthly_salary%TYPE;
+    v_annual_salary  NUMBER;
 BEGIN
-    -- Accept Student ID from the user
-    v_student_id := &student_id;
+    SELECT monthly_salary
+    INTO v_monthly_salary
+    FROM employee
+    WHERE employee_id = 101;
 
-    -- Retrieve student details
-    SELECT student_name, department, marks
-    INTO v_student_name, v_department, v_marks
-    FROM student
-    WHERE student_id = v_student_id;
+    v_annual_salary := calculate_annual_salary(v_monthly_salary);
 
-    -- Display student details
-    DBMS_OUTPUT.PUT_LINE('Student ID   : ' || v_student_id);
-    DBMS_OUTPUT.PUT_LINE('Student Name : ' || v_student_name);
-    DBMS_OUTPUT.PUT_LINE('Department   : ' || v_department);
-    DBMS_OUTPUT.PUT_LINE('Marks        : ' || v_marks);
-
-EXCEPTION
-    WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE(
-            'No student found with Student ID: ' || v_student_id
-        );
-
+    DBMS_OUTPUT.PUT_LINE('Employee ID     : 101');
+    DBMS_OUTPUT.PUT_LINE('Monthly Salary  : ' || v_monthly_salary);
+    DBMS_OUTPUT.PUT_LINE('Annual Salary   : ' || v_annual_salary);
 END;
 /
- ![output](add.2.png)
+```
+![output](add2.1.png)
+![output](add2.png)
