@@ -19,6 +19,7 @@ CREATE TABLE EMPLOYEE_AUDIT
     SALARY NUMBER(10,2),
     ACTION_TYPE VARCHAR2(20)
 );
+##desc the table
 ![output](9-b1.png)
 -- Create AFTER INSERT trigger
 CREATE OR REPLACE TRIGGER TRG_AFTER_INSERT
@@ -48,9 +49,10 @@ INSERT INTO EMPLOYEE
 VALUES (101, 'Rahul', 'HR', 35000);
 
 COMMIT;
+
+-- Display main table
 SELECT * FROM EMPLOYEE;
+
 -- Display audit table
 SELECT * FROM EMPLOYEE_AUDIT;
-
-
 ![output](9-b2.png)
